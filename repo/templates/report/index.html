@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Diana Report</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <br>
+        <h2>Diana - Notification</h2>
+        
+        <p>This website provides a fill-in form for registering to the 'Diana-Notification' as a new user.</p>
+        <p>Please input your email address below. You will get Diana notifications with it.</p>
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1">@</span>
+            </div>
+            <input type="text" class="form-control" placeholder="example@example.com" aria-label="email" aria-describedby="basic-addon1">
+        </div>
+        
+        <p id="status"></p>
+        <br>
+        <!-- 페이스북 로그인 버튼 자리 -->
+        <div class="fb-login-button" data-scope="public_profile,email,ads_read" onlogin="checkLoginState()" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div>
+        <!-- 페이스북 로그아웃 버튼 자리 -->
+        <button id="btn_logout" class="btn btn-secondary btn-sm" onclick="fbLogout();" style="display: none;">로그아웃</button>
+        <button id="btn_confirm" class="button is-success" onclick="fbLogout();" style="display: none;">확인</button>
+        <button id="btn_delete" class="button is-danger" onclick="fbLogout();" style="display: none;">탈퇴</button>
+    </div>
+    <div class="container">
+        <br><br>
+        <h6 class="subtitle is-6">* contact: tony.hwang@wizpace.com</h6>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    {% load static %}
+    <script async type="text/javascript" src="{% static 'report/js/fbLogin.js' %}"></script>
+    <script async type="text/javascript" src="{% static 'report/js/sendUserInfo.js' %}"></script>
+</body>
+</html>
