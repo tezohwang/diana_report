@@ -36,10 +36,18 @@ def create_mail(user_id, content):
         for insight in content['naver']:
             # 계정 아이디
             form += '<p>Account ID: {}</p>'.format(insight['network_id'])
-            # 캠페인 이름
-            form += '<p>Campaign: {}</p>'.format(insight['campaign_name'])
-            # 캠페인 아이디
-            form += '<p>Campaign ID: {}</p>'.format(insight['campaign_id'])
+            # 캠페인 이름 & 아이디
+            try:
+                form += '<p>Campaign: {}</p>'.format(insight['campaign_name'])
+                form += '<p>Campaign ID: {}</p>'.format(insight['campaign_id'])
+            except Exception as e:
+                pass
+            # 광고그룹 이름 & 아이디
+            try:
+                form += '<p>Adgroup: {}</p>'.format(insight['adgroup_name'])
+                form += '<p>Adgroup ID: {}</p>'.format(insight['adgroup_id'])
+            except Exception as e:
+                pass
             # 인사이트 데이터
             form += '<p>비용: {}</p>'.format(insight['salesAmt'])
             form += '<p>노출: {}</p>'.format(insight['impCnt'])
@@ -50,7 +58,6 @@ def create_mail(user_id, content):
             try:
                 form += '<p>전환: {}</p>'.format(insight['ccnt'])
             except Exception as e:
-                print(e)
                 form += '<p>전환: {}</p>'.format(0)
             form += '<p>광고일자: {}</p>'.format(insight['dateStart'])
 
