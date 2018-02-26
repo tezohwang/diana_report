@@ -18,6 +18,12 @@ def index(request):
 
 
 # Controll Views
+def get_yesterday(days):
+    yesterday_date = datetime.datetime.now().date() - datetime.timedelta(days=days)
+    reset_time = datetime.time(0,0,0)
+    yesterday_datetime = datetime.datetime.combine(yesterday_date, reset_time)
+    return yesterday_datetime
+
 def get_user_id_list():
     users = list(db['users'].find())
     user_id_list = []
@@ -28,12 +34,12 @@ def get_user_id_list():
 
 def fetch_facebook_data(user_id, content):
     content['facebook'] = []
-    yesterday = datetime.datetime.now() - datetime.timedelta(days=FETCH['from_days'])
+    yesterday = get_yesterday(FETCH['from_days'])
     # 어제부터 노출 된 적이 있는 캠페인들
     campaigns_on_from_yesterday = db['fbadcampaigns'].find(
         {
             "user_id":user_id,
-            "stop_time":{"$gte":yesterday}
+            "stop_time":{"$gt":yesterday}
         }
     )
     # 어제 노출된 적 있는 캠페인들의 인사이트 값 가져오기
@@ -42,7 +48,7 @@ def fetch_facebook_data(user_id, content):
             {
                 "campaign_id":campaign['campaign_id'],
                 # "date_stop":yesterday,
-                "date_stop":{"$gte":yesterday},
+                "date_stop":{"$gt":yesterday},
                 "impressions":{"$gt":FETCH['min_imp_limit']}
             }
         ))
@@ -54,13 +60,13 @@ def fetch_facebook_data(user_id, content):
     return content
 
 def fetch_naver_data(user_id, content):
-    yesterday = datetime.datetime.now() - datetime.timedelta(days=FETCH['from_days'])
+    yesterday = get_yesterday(FETCH['from_days'])
     # 어제부터 노출 된 적이 있는 캠페인들
     campaigns_on_from_yesterday = list(db['nvcampaigns'].find(
         {
             "user_id":user_id,
             # "dateEnd":yesterday,
-            "dateEnd":{"$gte":yesterday},
+            "dateEnd":{"$gt":yesterday},
             "impCnt":{"$gt":FETCH['min_imp_limit']}
         }
     ))
@@ -70,13 +76,13 @@ def fetch_naver_data(user_id, content):
     return content
 
 def fetch_adwords_data(user_id, content):
-    yesterday = datetime.datetime.now() - datetime.timedelta(days=FETCH['from_days'])
+    yesterday = get_yesterday(FETCH['from_days'])
     # 어제부터 노출 된 적이 있는 캠페인들
     campaigns_on_from_yesterday = list(db['gacampaigns'].find(
         {
             "user_id":user_id,
             # "dateEnd":yesterday,
-            "dateEnd":{"$gte":yesterday},
+            "dateEnd":{"$gt":yesterday},
             "impressions":{"$gt":FETCH['min_imp_limit']}
         }
     ))

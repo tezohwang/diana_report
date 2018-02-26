@@ -26,6 +26,7 @@ def create_mail(user_id, content):
             form += '<p>빈도: {}</p>'.format(insight['frequency'])
             form += '<p>클릭: {}</p>'.format(insight['clicks'])
             form += '<p>CPC: {}</p>'.format(insight['cpc'])
+            form += '<p>광고일자: {}</p>'.format(insight['date_start'])
             
     
     # 네이버 데이터가 있으면, 작성한다.
@@ -45,6 +46,13 @@ def create_mail(user_id, content):
             form += '<p>클릭: {}</p>'.format(insight['clkCnt'])
             form += '<p>클릭률: {}</p>'.format(insight['ctr'])
             form += '<p>CPC: {}</p>'.format(insight['cpc'])
+            # 전환은 있을 경우에만
+            try:
+                form += '<p>전환: {}</p>'.format(insight['ccnt'])
+            except Exception as e:
+                print(e)
+                form += '<p>전환: {}</p>'.format(0)
+            form += '<p>광고일자: {}</p>'.format(insight['dateStart'])
 
     # 애드워즈 데이터가 있으면, 작성한다.
     if content['adwords']:
@@ -64,6 +72,7 @@ def create_mail(user_id, content):
             form += '<p>클릭률: {}</p>'.format(insight['ctr'])
             form += '<p>CPC: {}</p>'.format(insight['avg_cpc'])
             form += '<p>평균순위: {}</p>'.format(insight['avg_position'])
+            form += '<p>광고일자: {}</p>'.format(insight['dateStart'])
 
     return form
     
