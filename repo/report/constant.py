@@ -21,7 +21,9 @@ MAIL = {
     'login_pw': 'xowhghkd1!A',
     'from': 'sb63w1@gmail.com',
     'recipients': [
-        'support@wizpace.com',
-        'tony.hwang@wizpace.com'
+        # 'support@wizpace.com',
+        'tony.hwang@wizpace.com',
+        # 'danbee@wizpace.com',
+        # 'jusung@wizpace.com'
     ]
 }
