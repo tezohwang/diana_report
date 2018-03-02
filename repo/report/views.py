@@ -170,7 +170,7 @@ def process():
         user_email = ['tony.hwang@wizpace.com', 'support@wizpace.com']
         send_mail(user_id, user_email, content)
         # print(user_id, content)
-    return print("process done")
+    return print("process done - {}".format(datetime.datetime.now()))
 
 def autobid_noti():
     db = connect_db('autobidding')
@@ -187,4 +187,4 @@ def autobid_noti():
         user_email = ['support@wizpace.com']
         if user_email:
             send_mail(network_id, user_email, content)
-    return print("autobid_noti done")
+    return print("autobid_noti done - {}".format(datetime.datetime.now()))
