@@ -6,7 +6,7 @@ import datetime
 def create_mail(user_id, content):
     form = ''
     # 리포트와 날짜 정보
-    form += '<h1>Diana Report - {}</h1>'.format(datetime.datetime.now().strftime('%Y-%m-%d'))
+    form += '<h1>Diana Report - {}</h1>'.format((datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))
     # 페이스북 데이터가 있으면, 작성한다.
     if content['facebook']:
         # 페이스북 표시
@@ -33,33 +33,87 @@ def create_mail(user_id, content):
     if content['naver']:
         # 네이버 표시
         form += '<h3>네이버</h3>'
-        for insight in content['naver']:
-            # 계정 아이디
-            form += '<p>Account ID: {}</p>'.format(insight['network_id'])
-            # 캠페인 이름 & 아이디
-            try:
-                form += '<p>Campaign: {}</p>'.format(insight['campaign_name'])
-                form += '<p>Campaign ID: {}</p>'.format(insight['campaign_id'])
-            except Exception as e:
-                pass
-            # 광고그룹 이름 & 아이디
-            try:
-                form += '<p>Adgroup: {}</p>'.format(insight['adgroup_name'])
-                form += '<p>Adgroup ID: {}</p>'.format(insight['adgroup_id'])
-            except Exception as e:
-                pass
-            # 인사이트 데이터
-            form += '<p>비용: {}</p>'.format(insight['salesAmt'])
-            form += '<p>노출: {}</p>'.format(insight['impCnt'])
-            form += '<p>클릭: {}</p>'.format(insight['clkCnt'])
-            form += '<p>클릭률: {}</p>'.format(insight['ctr'])
-            form += '<p>CPC: {}</p>'.format(insight['cpc'])
-            # 전환은 있을 경우에만
-            try:
-                form += '<p>전환: {}</p>'.format(insight['ccnt'])
-            except Exception as e:
-                form += '<p>전환: {}</p>'.format(0)
-            form += '<p>광고일자: {}</p>'.format(insight['dateStart'])
+        if content['naver']['campaigns']:
+            # form += '<h4>캠페인</h4>'
+            form += '''
+                <table style="width:100%;">
+                <tr>
+                    <th colspan="10" style="background-color: #00ff00;">캠페인</th>
+                </tr>
+                <tr>
+                    <th>캠페인</th>
+                    <th>비용</th>
+                    <th>노출</th>
+                    <th>클릭</th>
+                    <th>클릭률</th>
+                    <th>CPC</th>
+                    <th>전환</th>
+                </tr>
+            '''
+            for campaign in content['naver']['campaigns']:
+                # tr
+                form += '<tr>'
+                # 계정 아이디
+                # form += '<td>{}</td>'.format(campaign['network_id'])
+                # 캠페인 이름 & 아이디
+                form += '<td>{}</td>'.format(campaign['campaign_name'])
+                # form += '<td>{}</td>'.format(campaign['campaign_id'])
+                # 인사이트 데이터
+                form += '<td>{}</td>'.format(campaign['salesAmt'])
+                form += '<td>{}</td>'.format(campaign['impCnt'])
+                form += '<td>{}</td>'.format(campaign['clkCnt'])
+                form += '<td>{}</td>'.format(campaign['ctr'])
+                form += '<td>{}</td>'.format(campaign['cpc'])
+                # 전환은 있을 경우에만
+                try:
+                    form += '<td>{}</td>'.format(campaign['ccnt'])
+                except Exception as e:
+                    form += '<td>{}</td>'.format(0)
+                # form += '<td>{}</td>'.format(campaign['dateStart'])
+                # /tr
+                form += '</tr>'
+            form += '</table>'
+
+        if content['naver']['adgroups']:
+            # form += '<h4>광고그룹</h4>'
+            form += '''
+                <table style="width:100%;">
+                <tr>
+                    <th colspan="10" style="background-color: #00ff00;">광고그룹</th>
+                </tr>
+                <tr>
+                    <th>광고그룹</th>
+                    <th>비용</th>
+                    <th>노출</th>
+                    <th>클릭</th>
+                    <th>클릭률</th>
+                    <th>CPC</th>
+                    <th>전환</th>
+                </tr>
+            '''
+            for adgroup in content['naver']['adgroups']:
+                # tr
+                form += '<tr>'
+                # 계정 아이디
+                # form += '<td>{}</td>'.format(adgroup['network_id'])
+                # 광고그룹 이름 & 아이디
+                form += '<td>{}</td>'.format(adgroup['adgroup_name'])
+                # form += '<td>{}</td>'.format(adgroup['adgroup_id'])
+                # 인사이트 데이터
+                form += '<td>{}</td>'.format(adgroup['salesAmt'])
+                form += '<td>{}</td>'.format(adgroup['impCnt'])
+                form += '<td>{}</td>'.format(adgroup['clkCnt'])
+                form += '<td>{}</td>'.format(adgroup['ctr'])
+                form += '<td>{}</td>'.format(adgroup['cpc'])
+                # 전환은 있을 경우에만
+                try:
+                    form += '<td>{}</td>'.format(adgroup['ccnt'])
+                except Exception as e:
+                    form += '<td>{}</td>'.format(0)
+                # form += '<td>{}</td>'.format(adgroup['dateStart'])
+                # /tr
+                form += '</tr>'
+            form += '</table>'
 
     # 애드워즈 데이터가 있으면, 작성한다.
     if content['adwords']:
@@ -81,5 +135,24 @@ def create_mail(user_id, content):
             form += '<p>평균순위: {}</p>'.format(insight['avg_position'])
             form += '<p>광고일자: {}</p>'.format(insight['dateStart'])
 
-    return form
+    html_before = '''
+    <!DOCTYPE html>
+    <html>
+    <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+    <style>
+    table, th, td {border: 1px solid black; border-collapse: collapse;}
+    td {text-align: center;}
+    tr:nth-child(even) {background-color: #eee;}
+    </style>
+    </head>
+    <body>
+    '''
+    html_after = '''
+    </body>
+    </html>
+    '''
+    html = html_before + form + html_after
+
+    return html
     

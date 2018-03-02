@@ -62,6 +62,7 @@ def fetch_facebook_data(user_id, content):
     return content
 
 def fetch_naver_data(user_id, content):
+    content['naver'] = {}
     yesterday, today = get_yesterday_and_today(FETCH['from_days'])
     # 어제부터 노출 된 적이 있는 캠페인들
     campaigns_on_from_yesterday = list(db['nvcampaigns'].find(
@@ -72,7 +73,8 @@ def fetch_naver_data(user_id, content):
             "impCnt":{"$gte":FETCH['min_imp_limit']}
         }
     ))
-    content['naver'] = campaigns_on_from_yesterday
+    if campaigns_on_from_yesterday:
+        content['naver']['campaigns'] = campaigns_on_from_yesterday
 
     # 어제부터 노출 된 적이 있는 광고그룹들
     adgroups_on_from_yesterday = list(db['nvadgroups'].find(
@@ -83,7 +85,8 @@ def fetch_naver_data(user_id, content):
             "impCnt":{"$gte":FETCH['min_imp_limit']}
         }
     ))
-    content['naver'] += adgroups_on_from_yesterday
+    if adgroups_on_from_yesterday:
+        content['naver']['adgroups'] = adgroups_on_from_yesterday
 
     print(content['naver'])
     print("fetch_naver_data done")
