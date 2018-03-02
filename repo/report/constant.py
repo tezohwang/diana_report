@@ -1,8 +1,14 @@
 # 앱에 쓰이는 상수 선언
 
 DATABASE = {
-    'db_uri': 'mongodb://wizpace:wizpace0@52.78.216.222:27017/diana',
-    'db_name': 'diana'
+    'diana': {
+        'db_uri': 'mongodb://wizpace:wizpace0@52.78.216.222:27017/diana',
+        'db_name': 'diana'
+    },
+    'autobidding':{
+        'db_uri': 'mongodb://autobidding:autobid0@13.125.87.196:27017/autobidding',
+        'db_name': 'autobidding'
+    }
 }
 FB_APP = {
     'app_id': '1633923886632047',
