@@ -59,14 +59,14 @@ def create_mail(user_id, content):
                 form += '<td>{}</td>'.format(campaign['campaign_name'])
                 # form += '<td>{}</td>'.format(campaign['campaign_id'])
                 # 인사이트 데이터
-                form += '<td>{}</td>'.format(campaign['salesAmt'])
-                form += '<td>{}</td>'.format(campaign['impCnt'])
-                form += '<td>{}</td>'.format(campaign['clkCnt'])
+                form += '<td>{}</td>'.format(format(int(campaign['salesAmt']), ','))
+                form += '<td>{}</td>'.format(format(int(campaign['impCnt']), ','))
+                form += '<td>{}</td>'.format(format(int(campaign['clkCnt']), ','))
                 form += '<td>{}</td>'.format(campaign['ctr'])
-                form += '<td>{}</td>'.format(campaign['cpc'])
+                form += '<td>{}</td>'.format(format(int(campaign['cpc']), ','))
                 # 전환은 있을 경우에만
                 try:
-                    form += '<td>{}</td>'.format(campaign['ccnt'])
+                    form += '<td>{}</td>'.format(format(int(campaign['ccnt']), ','))
                 except Exception as e:
                     form += '<td>{}</td>'.format(0)
                 # form += '<td>{}</td>'.format(campaign['dateStart'])
@@ -100,14 +100,14 @@ def create_mail(user_id, content):
                 form += '<td>{}</td>'.format(adgroup['adgroup_name'])
                 # form += '<td>{}</td>'.format(adgroup['adgroup_id'])
                 # 인사이트 데이터
-                form += '<td>{}</td>'.format(adgroup['salesAmt'])
-                form += '<td>{}</td>'.format(adgroup['impCnt'])
-                form += '<td>{}</td>'.format(adgroup['clkCnt'])
+                form += '<td>{}</td>'.format(format(int(adgroup['salesAmt']), ','))
+                form += '<td>{}</td>'.format(format(int(adgroup['impCnt']), ','))
+                form += '<td>{}</td>'.format(format(int(adgroup['clkCnt']), ','))
                 form += '<td>{}</td>'.format(adgroup['ctr'])
-                form += '<td>{}</td>'.format(adgroup['cpc'])
+                form += '<td>{}</td>'.format(format(int(adgroup['cpc']), ','))
                 # 전환은 있을 경우에만
                 try:
-                    form += '<td>{}</td>'.format(adgroup['ccnt'])
+                    form += '<td>{}</td>'.format(format(int(adgroup['ccnt']), ','))
                 except Exception as e:
                     form += '<td>{}</td>'.format(0)
                 # form += '<td>{}</td>'.format(adgroup['dateStart'])
