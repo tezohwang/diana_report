@@ -187,7 +187,7 @@ def autobid_noti():
         }
         fetch_naver_data_by_networkid(network_id, content)
         # should get from DB
-        user_email = ['support@wizpace.com']
+        user_email = ['tony.hwang@wizpace.com', 'support@wizpace.com']
         # user_email = ['tony.hwang@wizpace.com']
         if user_email:
             send_mail(network_id, user_email, content)
