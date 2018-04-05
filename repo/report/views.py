@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 from .database import connect_db
 from .constant import FETCH, MAIL
-from .forms import create_mail
+from .forms import create_mail, create_mail_2
 
 import datetime, smtplib
 
@@ -152,7 +152,9 @@ def send_mail(user_id, user_email, content):
     msg['From'] = MAIL['from']
     recipients = user_email
     msg['To'] = ','.join(recipients)
-    html = create_mail(user_id, content)
+    html = create_mail_2(user_id, content)
+    if not html:
+        return print("send_mail failed")
     msg.attach(MIMEText(html, 'html'))
     smtp.sendmail(msg['From'], recipients, msg.as_string())
     smtp.quit()
@@ -167,7 +169,8 @@ def process():
         fetch_naver_data(user_id, content)
         fetch_adwords_data(user_id, content)
         # should get from DB
-        user_email = ['tony.hwang@wizpace.com', 'support@wizpace.com']
+        # user_email = ['tony.hwang@wizpace.com', 'support@wizpace.com']
+        user_email = ['tony.hwang@wizpace.com']
         send_mail(user_id, user_email, content)
         # print(user_id, content)
     return print("process done - {}".format(datetime.datetime.now()))
