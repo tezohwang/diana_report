@@ -169,8 +169,8 @@ def process():
         fetch_naver_data(user_id, content)
         fetch_adwords_data(user_id, content)
         # should get from DB
-        # user_email = ['tony.hwang@wizpace.com', 'support@wizpace.com']
-        user_email = ['tony.hwang@wizpace.com']
+        user_email = ['tony.hwang@wizpace.com', 'support@wizpace.com']
+        # user_email = ['tony.hwang@wizpace.com']
         send_mail(user_id, user_email, content)
         # print(user_id, content)
     return print("process done - {}".format(datetime.datetime.now()))
