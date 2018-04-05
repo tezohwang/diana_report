@@ -174,7 +174,7 @@ def create_mail_2(user_id, content):
                 text-align: center;
                 padding: 5px;
             }
-            tr:nth-child(even) {background-color: #eee;}
+            tr:nth-child(even) {background-color: #f1fbf2;}
         </style>
     </head>
     '''
