@@ -167,6 +167,7 @@ def create_mail_2(user_id, content):
     form += '''
     <head>
         <meta content="text/html; charset=utf-8" http-equiv="Content-Type"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <style>
             td, th {
                 border: 1px solid rgba(0, 0, 0, 0.1);
