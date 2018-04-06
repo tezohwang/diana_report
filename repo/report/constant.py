@@ -33,3 +33,16 @@ MAIL = {
         # 'jusung@wizpace.com'
     ]
 }
+
+RECOMMEND = {
+    'salesAmt': {
+        'bestgo':50000,
+        'uiseong':5000,
+        'wizpace':500,
+    },
+    'no_ccnt_salesAmt': {
+        'bestgo':50000,
+        'uiseong':5000,
+        'wizpace':500,
+    }
+}

@@ -209,6 +209,8 @@ def create_mail_2(user_id, content):
         </div>
     '''.format((datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'), user_id)
 
+    if not 'campaigns' in content['naver']:
+        return False
     if content['naver']['campaigns']:
         # body > content 시작
         form += '''
@@ -302,6 +304,31 @@ def create_mail_2(user_id, content):
                     form += '<td>{}</td>'.format(0)
                 # form += '<td>{}</td>'.format(adgroup['dateStart'])
                 # /tr
+                form += '</tr>'
+        form += '</table>'
+        # 키워드 이슈가 있으면 작성
+        if content['naver']['issues']:
+            form += '''
+                <table style="width:100%; border:1px solid rgba(0,0,0,0.1);border-collapse:collapse;font-family:Helvetica;font-size:12px;font-style:normal;font-variant-caps:normal;font-weight:normal;letter-spacing:normal;text-align:start;text-indent:0px;text-transform:none;white-space:normal;word-spacing:0px;width:759px">
+                <tbody>
+                <tr>
+                    <th colspan="10"
+                        style="border:1px solid #52A4FC;border-collapse:collapse;background-color:#52A4FC;color: #FFFFFF;padding: 5px;font-size: 13px">
+                        키워드
+                    </th>
+                </tr>
+                <tr>
+                    <th>키워드명</th>
+                    <th>주요 이슈</th>
+                </tr>
+            '''
+            for issue_obj in content['naver']['issues']:
+                # tr
+                form += '<tr>'
+                # 키워드 이름
+                form += '<td>{}</td>'.format(issue_obj['keyword_name'])
+                # 이슈 데이터
+                form += '<td>{}</td>'.format(issue_obj['issue'])
                 form += '</tr>'
         form += '</table>'
     form += '''
