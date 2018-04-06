@@ -190,5 +190,10 @@ def autobid_noti():
         user_email = ['tony.hwang@wizpace.com', 'support@wizpace.com']
         # user_email = ['tony.hwang@wizpace.com']
         if user_email:
+            if 'campaigns' in content['naver']:
+                content['naver']['campaigns'] = sorted(content['naver']['campaigns'], key=lambda campaign: campaign['campaign_name'])
+            if 'adgroups' in content['naver']:
+                content['naver']['adgroups'] = sorted(content['naver']['adgroups'], key=lambda adgroup: adgroup['adgroup_name'])
+            # print(content)
             send_mail(network_id, user_email, content)
     return print("autobid_noti done - {}".format(datetime.datetime.now()))
