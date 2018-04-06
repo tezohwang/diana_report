@@ -207,7 +207,7 @@ def create_mail_2(user_id, content):
         <div>
             <img alt="naver_logo" src="https://s3.ap-northeast-2.amazonaws.com/wizpace/diana_notification/naver_logo.png" width="120" style="display: block;padding: 5px;"/>
         </div>
-    '''.format((datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'), user_id)
+    '''.format((datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'), content['user_id'])
 
     if not 'campaigns' in content['naver']:
         return False
