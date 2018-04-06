@@ -36,13 +36,18 @@ MAIL = {
 
 RECOMMEND = {
     'salesAmt': {
-        'bestgo':50000,
-        'uiseong':5000,
-        'wizpace':500,
+        'bestgo':500000,
+        'uiseong':3000,
+        'wizpace':1500,
     },
     'no_ccnt_salesAmt': {
         'bestgo':50000,
-        'uiseong':5000,
+        'uiseong':1000,
         'wizpace':500,
+    },
+    'avg_cpc_times': {
+        'bestgo':2.0,
+        'uiseong':2.0,
+        'wizpace':5.0,
     }
 }

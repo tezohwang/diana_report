@@ -4,12 +4,11 @@ from .database import connect_db
 from .constant import FETCH, MAIL, RECOMMEND
 from .forms import create_mail, create_mail_2
 
-import datetime, smtplib
+import datetime, smtplib, numpy
 
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.header import Header
-
 
 # Route Views
 def index(request):
@@ -206,7 +205,7 @@ def recommend(content):
 	db = connect_db('diana')
 	nvinsights = db['nvinsights']
 	nvinsightsp = db['nvinsightsp']
-	# 현재까지 5000원 이상 사용한 키워드 리스트
+	# 현재까지 1000원 이상 사용한 키워드 리스트
 	keyword_list = list(nvinsightsp.find(
 		{
 			'network_id':content['network_id'],
@@ -223,7 +222,7 @@ def recommend(content):
 			}
 		))
 		# print(data_7days)
-		# 지난 7일간 5000원 이상 사용했지만, 전환이 전혀 없는 키워드 검출
+		# 지난 7일간 1000원 이상 사용했지만, 전환이 전혀 없는 키워드 검출
 		if sum([data['ccnt'] for data in data_7days]) == 0 and sum([data['salesAmt'] for data in data_7days]) >= RECOMMEND['no_ccnt_salesAmt'][content['user_id']]:
 			content['naver']['issues'].append(
 				{
@@ -232,6 +231,30 @@ def recommend(content):
 					'issue':'7일간 소진 비용({}원) 대비 전환이 전혀 없습니다.'.format(sum([data['salesAmt'] for data in data_7days]), ','),
 				}
 			)
+		# 지난 7일간 CPC 대비 CTR이 가장 좋은 순위를 추천
+		ctr_by_cpc = [data['ctr']/(data['cpc'] + 0.0001) for data in data_7days if data['cpc']]
+		if ctr_by_cpc:
+			max_index = ctr_by_cpc.index(max(ctr_by_cpc))
+			best_rank = data_7days[max_index]['avgRnk']
+			if best_rank:
+				content['naver']['issues'].append(
+					{
+						'keyword_id':keyword['keyword_id'],
+						'keyword_name':keyword['keyword_name'],
+						'issue':'7일간 최적 효율 순위는 {}위 입니다'.format(best_rank),
+					}
+				)
+		# 지난 7일간 평균 CPC 대비 어제 CPC가 급상승(2배이상)한 키워드 검출
+		if data_7days:
+			avg_cpc_for_7days = numpy.mean([data['cpc'] for data in data_7days])
+			if data_7days[-1]['cpc'] >= avg_cpc_for_7days * RECOMMEND['avg_cpc_times'][content['user_id']] and avg_cpc_for_7days * data_7days[-1]['cpc']:
+				content['naver']['issues'].append(
+					{
+						'keyword_id':keyword['keyword_id'],
+						'keyword_name':keyword['keyword_name'],
+						'issue':'7일간 평균({}원)에 비해 CPC({}원)가 급상승 했습니다'.format(round(avg_cpc_for_7days, 2), data_7days[-1]['cpc']),
+					}
+				)
 	
 	return content
 
