@@ -148,7 +148,7 @@ def send_mail(user_id, user_email, content):
     smtp.login(MAIL['login_id'], MAIL['login_pw'])
 
     msg = MIMEMultipart('alternative')
-    msg['Subject'] = 'Diana Facebook Report on {}'.format((datetime.datetime.now() - datetime.timedelta(days=FETCH['from_days'])).strftime('%Y-%m-%d'))
+    msg['Subject'] = 'Diana Naver Report on {}'.format((datetime.datetime.now() - datetime.timedelta(days=FETCH['from_days'])).strftime('%Y-%m-%d'))
     msg['From'] = MAIL['from']
     recipients = user_email
     msg['To'] = ','.join(recipients)
