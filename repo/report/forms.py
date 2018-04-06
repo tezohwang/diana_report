@@ -176,6 +176,27 @@ def create_mail_2(user_id, content):
                 padding: 5px;
             }
             tr:nth-child(even) {background-color: #f1fbf2;}
+            @media(max-width: 600px) {
+
+                table {
+                    width: 90%;
+                    max-width: 580px;
+                }
+
+                h1 {
+                    font-size: 40px;
+                    line-height: 40px;
+                }
+
+                p {
+                    font-size: 18px;
+                }
+
+                td {
+                    font-size: 10px;
+                    line-height: 20px;
+                }
+            }
         </style>
     </head>
     '''
@@ -195,7 +216,7 @@ def create_mail_2(user_id, content):
                     <td style="background-color:#FFFFFF;color:#333333;padding:0px; text-align: center;position: relative; border-color: #FFFFFF">
                         <h1 style="padding-top: 60px">{} <br> Diana Report</h1>
                         <hr width="20%" color="#00c73c">
-                        <p style="padding-top: 20px"><b>Diana ID: {}</b></p>
+                        <p style="padding-top: 20px"><b>Naver ID: {}</b></p>
                         <img alt="graph Image"
                             src="https://s3.ap-northeast-2.amazonaws.com/wizpace/diana_notification/header_image2.png"
                             width="100%" height="auto"/>
