@@ -353,6 +353,17 @@ def create_mail_2(user_id, content):
                 form += '</tr>'
         form += '</table>'
     form += '''
+    <table style="width:100%; border:1px solid rgba(0,0,0,0.1);border-collapse:collapse;font-family:Helvetica;font-size:12px;font-style:normal;font-variant-caps:normal;font-weight:normal;letter-spacing:normal;text-align:start;text-indent:0px;text-transform:none;white-space:normal;word-spacing:0px;width:759px">
+    <tr>
+    <td>
+    <br>
+    <p style="font-size:15px;line-height:20px;font-family: 'AppleSDGothicNeo-Light', Helvetica, Arial, serif; text-align:center;">기간별 광고 데이터 및 자세한 분석은 아래 홈페이지에서 확인 가능합니다</p>
+    <p style="font-size:15px;line-height:20px;font-family: 'AppleSDGothicNeo-Light', Helvetica, Arial, serif; text-align:center;"><a href="http://www.diana.business">www.diana.business</a></p>
+    <p style="font-size:15px;line-height:20px;font-family: 'AppleSDGothicNeo-Light', Helvetica, Arial, serif; text-align:center;">2017 @ COPYRIGHT - DIANA</p>
+    <img alt="diana logo img" src="https://s3.ap-northeast-2.amazonaws.com/wizpace/diana_notification/diana_logo_gray.png" width="104px" height="auto" style="padding: 10px" />
+    </td>
+    </tr>
+    </table>
     </body>
     </html>
     '''
