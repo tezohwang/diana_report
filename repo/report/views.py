@@ -187,8 +187,8 @@ def autobid_noti():
 		}
 		fetch_naver_data_by_networkid(network_id, content)
 		# should get from DB
-		# user_email = ['tony.hwang@wizpace.com', 'support@wizpace.com']
-		user_email = ['tony.hwang@wizpace.com', 'danbee@wizpace.com', 'support@wizpace.com']
+		user_email = ['tony.hwang@wizpace.com', 'support@wizpace.com']
+		# user_email = ['tony.hwang@wizpace.com', 'danbee@wizpace.com', 'support@wizpace.com']
 		if user_email:
 			if 'campaigns' in content['naver']:
 				content['naver']['campaigns'] = sorted(content['naver']['campaigns'], key=lambda campaign: campaign['campaign_name'])
