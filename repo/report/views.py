@@ -200,8 +200,8 @@ def autobid_noti():
         }
         fetch_naver_data_by_networkid(network_id, content)
         # should get from DB
-        # user_email = ['tony.hwang@wizpace.com']
-        user_email = ['tony.hwang@wizpace.com', 'support@wizpace.com']
+        user_email = ['tony.hwang@wizpace.com']
+        # user_email = ['tony.hwang@wizpace.com', 'support@wizpace.com']
         # user_email = ['tony.hwang@wizpace.com', 'danbee@wizpace.com', 'support@wizpace.com']
         if user_email:
             if 'campaigns' in content['naver']:
@@ -264,8 +264,12 @@ def recommend(content):
                 )
         # 지난 7일간 평균 CPC 대비 어제 CPC가 급상승(2배이상)한 키워드 검출 (cpc가 0인 데이터는 제외)
         if data_7days:
-            avg_cpc_for_7days = numpy.mean(
-                [data['cpc'] for data in data_7days if data['cpc']])
+            try:
+                avg_cpc_for_7days = numpy.mean(
+                    [data['cpc'] for data in data_7days if data['cpc']])
+            except Exception as e:
+                print(str(e))
+                avg_cpc_for_7days = 0
             if data_7days[-1]['cpc'] >= avg_cpc_for_7days * RECOMMEND['avg_cpc_times'][content['user_id']] and avg_cpc_for_7days * data_7days[-1]['cpc']:
                 content['naver']['issues'].append(
                     {
