@@ -3,10 +3,13 @@ import datetime
 # 입력 폼 선언
 
 # 이메일 폼 선언
+
+
 def create_mail(user_id, content):
     form = ''
     # 리포트와 날짜 정보
-    form += '<h1>Diana Report - {}</h1>'.format((datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))
+    form += '<h1>Diana Report - {}</h1>'.format(
+        (datetime.datetime.now() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))
     # 페이스북 데이터가 있으면, 작성한다.
     if content['facebook']:
         # 페이스북 표시
@@ -27,8 +30,7 @@ def create_mail(user_id, content):
             form += '<p>클릭: {}</p>'.format(insight['clicks'])
             form += '<p>CPC: {}</p>'.format(insight['cpc'])
             form += '<p>광고일자: {}</p>'.format(insight['date_start'])
-            
-    
+
     # 네이버 데이터가 있으면, 작성한다.
     if content['naver']:
         # 네이버 표시
@@ -59,14 +61,18 @@ def create_mail(user_id, content):
                 form += '<td>{}</td>'.format(campaign['campaign_name'])
                 # form += '<td>{}</td>'.format(campaign['campaign_id'])
                 # 인사이트 데이터
-                form += '<td>{}</td>'.format(format(int(campaign['salesAmt']), ','))
-                form += '<td>{}</td>'.format(format(int(campaign['impCnt']), ','))
-                form += '<td>{}</td>'.format(format(int(campaign['clkCnt']), ','))
+                form += '<td>{}</td>'.format(
+                    format(int(campaign['salesAmt']), ','))
+                form += '<td>{}</td>'.format(
+                    format(int(campaign['impCnt']), ','))
+                form += '<td>{}</td>'.format(
+                    format(int(campaign['clkCnt']), ','))
                 form += '<td>{}</td>'.format(campaign['ctr'])
                 form += '<td>{}</td>'.format(format(int(campaign['cpc']), ','))
                 # 전환은 있을 경우에만
                 try:
-                    form += '<td>{}</td>'.format(format(int(campaign['ccnt']), ','))
+                    form += '<td>{}</td>'.format(
+                        format(int(campaign['ccnt']), ','))
                 except Exception as e:
                     form += '<td>{}</td>'.format(0)
                 # form += '<td>{}</td>'.format(campaign['dateStart'])
@@ -100,14 +106,18 @@ def create_mail(user_id, content):
                 form += '<td>{}</td>'.format(adgroup['adgroup_name'])
                 # form += '<td>{}</td>'.format(adgroup['adgroup_id'])
                 # 인사이트 데이터
-                form += '<td>{}</td>'.format(format(int(adgroup['salesAmt']), ','))
-                form += '<td>{}</td>'.format(format(int(adgroup['impCnt']), ','))
-                form += '<td>{}</td>'.format(format(int(adgroup['clkCnt']), ','))
+                form += '<td>{}</td>'.format(
+                    format(int(adgroup['salesAmt']), ','))
+                form += '<td>{}</td>'.format(
+                    format(int(adgroup['impCnt']), ','))
+                form += '<td>{}</td>'.format(
+                    format(int(adgroup['clkCnt']), ','))
                 form += '<td>{}</td>'.format(adgroup['ctr'])
                 form += '<td>{}</td>'.format(format(int(adgroup['cpc']), ','))
                 # 전환은 있을 경우에만
                 try:
-                    form += '<td>{}</td>'.format(format(int(adgroup['ccnt']), ','))
+                    form += '<td>{}</td>'.format(
+                        format(int(adgroup['ccnt']), ','))
                 except Exception as e:
                     form += '<td>{}</td>'.format(0)
                 # form += '<td>{}</td>'.format(adgroup['dateStart'])
@@ -157,6 +167,8 @@ def create_mail(user_id, content):
     return html
 
 # 이메일 폼 업데이트 18.04.05
+
+
 def create_mail_2(user_id, content):
     if not content['naver']:
         return False
@@ -269,14 +281,16 @@ def create_mail_2(user_id, content):
             form += '<td>{}</td>'.format(campaign['campaign_name'])
             # form += '<td>{}</td>'.format(campaign['campaign_id'])
             # 인사이트 데이터
-            form += '<td>{}</td>'.format(format(int(campaign['salesAmt']), ','))
+            form += '<td>{}</td>'.format(
+                format(int(campaign['salesAmt']), ','))
             form += '<td>{}</td>'.format(format(int(campaign['impCnt']), ','))
             form += '<td>{}</td>'.format(format(int(campaign['clkCnt']), ','))
             form += '<td>{}</td>'.format(campaign['ctr'])
             form += '<td>{}</td>'.format(format(int(campaign['cpc']), ','))
             # 전환은 있을 경우에만
             try:
-                form += '<td>{}</td>'.format(format(int(campaign['ccnt']), ','))
+                form += '<td>{}</td>'.format(
+                    format(int(campaign['ccnt']), ','))
             except Exception as e:
                 form += '<td>{}</td>'.format(0)
             # form += '<td>{}</td>'.format(campaign['dateStart'])
@@ -313,14 +327,18 @@ def create_mail_2(user_id, content):
                 form += '<td>{}</td>'.format(adgroup['adgroup_name'])
                 # form += '<td>{}</td>'.format(adgroup['adgroup_id'])
                 # 인사이트 데이터
-                form += '<td>{}</td>'.format(format(int(adgroup['salesAmt']), ','))
-                form += '<td>{}</td>'.format(format(int(adgroup['impCnt']), ','))
-                form += '<td>{}</td>'.format(format(int(adgroup['clkCnt']), ','))
+                form += '<td>{}</td>'.format(
+                    format(int(adgroup['salesAmt']), ','))
+                form += '<td>{}</td>'.format(
+                    format(int(adgroup['impCnt']), ','))
+                form += '<td>{}</td>'.format(
+                    format(int(adgroup['clkCnt']), ','))
                 form += '<td>{}</td>'.format(adgroup['ctr'])
                 form += '<td>{}</td>'.format(format(int(adgroup['cpc']), ','))
                 # 전환은 있을 경우에만
                 try:
-                    form += '<td>{}</td>'.format(format(int(adgroup['ccnt']), ','))
+                    form += '<td>{}</td>'.format(
+                        format(int(adgroup['ccnt']), ','))
                 except Exception as e:
                     form += '<td>{}</td>'.format(0)
                 # form += '<td>{}</td>'.format(adgroup['dateStart'])

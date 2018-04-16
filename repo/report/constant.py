@@ -5,7 +5,7 @@ DATABASE = {
         'db_uri': 'mongodb://wizpace:wizpace0@52.78.216.222:27017/diana',
         'db_name': 'diana'
     },
-    'autobidding':{
+    'autobidding': {
         'db_uri': 'mongodb://autobidding:autobid0@13.125.87.196:27017/autobidding',
         'db_name': 'autobidding'
     }
@@ -17,9 +17,9 @@ FB_APP = {
 
 FETCH = {
     # yesterday
-    'from_days':1,
+    'from_days': 1,
     # minimum impression limit
-    'min_imp_limit':10
+    'min_imp_limit': 10
 }
 
 MAIL = {
@@ -36,18 +36,18 @@ MAIL = {
 
 RECOMMEND = {
     'salesAmt': {
-        'bestgo':500000,
-        'uiseong':3000,
-        'wizpace':1500,
+        'bestgo': 500000,
+        'uiseong': 3000,
+        'wizpace': 1500,
     },
     'no_ccnt_salesAmt': {
-        'bestgo':50000,
-        'uiseong':1000,
-        'wizpace':500,
+        'bestgo': 50000,
+        'uiseong': 1000,
+        'wizpace': 500,
     },
     'avg_cpc_times': {
-        'bestgo':2.0,
-        'uiseong':2.0,
-        'wizpace':5.0,
+        'bestgo': 2.0,
+        'uiseong': 2.0,
+        'wizpace': 5.0,
     }
 }
