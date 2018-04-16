@@ -262,7 +262,7 @@ def recommend(content):
                         'issue': '7일간 최적 효율 순위는 {}위 입니다'.format(best_rank),
                     }
                 )
-        # 지난 7일간 평균 CPC 대비 어제 CPC가 급상승(2배이상)한 키워드 검출
+        # 지난 7일간 평균 CPC 대비 어제 CPC가 급상승(2배이상)한 키워드 검출 (cpc가 0인 데이터는 제외)
         if data_7days:
             avg_cpc_for_7days = numpy.mean(
                 [data['cpc'] for data in data_7days if data['cpc']])
