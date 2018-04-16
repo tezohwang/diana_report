@@ -164,6 +164,9 @@ def send_mail(user_id, user_email, content):
     msg['To'] = ','.join(recipients)
     html = create_mail_2(user_id, content)
     if not html:
+        print(user_id)
+        print(user_email)
+        print(content)
         return print("send_mail failed")
     msg.attach(MIMEText(html, 'html'))
     smtp.sendmail(msg['From'], recipients, msg.as_string())
