@@ -242,6 +242,7 @@ def recommend(content):
             }
         ))
         # print(data_7days)
+
         # 지난 7일간 1000원 이상 사용했지만, 전환이 전혀 없는 키워드 검출
         if sum([data['ccnt'] for data in data_7days]) == 0 and sum([data['salesAmt'] for data in data_7days]) >= RECOMMEND['no_ccnt_salesAmt'][content['user_id']]:
             content['naver']['issues'].append(
@@ -251,6 +252,7 @@ def recommend(content):
                     'issue': '7일간 소진 비용({}원) 대비 전환이 전혀 없습니다.'.format(sum([data['salesAmt'] for data in data_7days]), ','),
                 }
             )
+
         # 지난 7일간 CPC 대비 CTR이 가장 좋은 순위를 추천
         ctr_by_cpc = [data['ctr']/(data['cpc'] + 0.0001)
                       for data in data_7days if data['cpc']]
@@ -265,7 +267,8 @@ def recommend(content):
                         'issue': '7일간 최적 효율 순위는 {}위 입니다'.format(best_rank),
                     }
                 )
-        # 지난 7일간 평균 CPC 대비 어제 CPC가 급상승(2배이상)한 키워드 검출 (cpc가 0인 데이터는 제외)
+
+        # 지난 7일간 평균 CPC 대비 어제 CPC가 급상승(2배 이상)한 키워드 검출 (CPC가 0인 데이터는 제외)
         if data_7days:
             try:
                 avg_cpc_for_7days = numpy.mean(
@@ -273,12 +276,46 @@ def recommend(content):
             except Exception as e:
                 print(str(e))
                 avg_cpc_for_7days = 0
-            if data_7days[-1]['cpc'] >= avg_cpc_for_7days * RECOMMEND['avg_cpc_times'][content['user_id']] and avg_cpc_for_7days * data_7days[-1]['cpc']:
+            if data_7days[-1]['cpc'] > avg_cpc_for_7days * RECOMMEND['avg_cpc_times'][content['user_id']] and avg_cpc_for_7days:
                 content['naver']['issues'].append(
                     {
                         'keyword_id': keyword['keyword_id'],
                         'keyword_name': keyword['keyword_name'],
                         'issue': '7일간 평균({}원)에 비해 CPC({}원)가 급상승 했습니다'.format(round(avg_cpc_for_7days, 2), data_7days[-1]['cpc']),
+                    }
+                )
+
+        # 지난 7일간 평균 CPM 대비 어제 CPM이 급상승(2배 이상)한 키워드 검출 (CPM이 0인 데이터는 제외)
+        if data_7days:
+            try:
+                avg_cpm_for_7days = numpy.mean(
+                    [data['salesAmt']/data['impCnt'] for data in data_7days if data['impCnt'] * data['salesAmt']])
+            except Exception as e:
+                print(str(e))
+                avg_cpm_for_7days = 0
+            if data_7days[-1]['salesAmt']/data_7days[-1]['impCnt'] > avg_cpm_for_7days * RECOMMEND['avg_cpm_times'][content['user_id']] and avg_cpm_for_7days:
+                content['naver']['issues'].append(
+                    {
+                        'keyword_id': keyword['keyword_id'],
+                        'keyword_name': keyword['keyword_name'],
+                        'issue': '7일간 평균({}원)에 비해 노출 경쟁(CPM, {}원)이 급상승 했습니다'.format(round(avg_cpm_for_7days, 2), round(data_7days[-1]['salesAmt']/data_7days[-1]['impCnt'], 2)),
+                    }
+                )
+
+        # 지난 7일간 평균 Impressions 대비 어제 Impressions 급상승(2배 이상)한 키워드 검출 (Impressions이 0인 데이터는 제외)
+        if data_7days:
+            try:
+                avg_imp_for_7days = numpy.mean(
+                    [data['impCnt'] for data in data_7days if data['impCnt']])
+            except Exception as e:
+                print(str(e))
+                avg_imp_for_7days = 0
+            if data_7days[-1]['impCnt'] > avg_imp_for_7days * RECOMMEND['avg_imp_times'][content['user_id']] and avg_imp_for_7days:
+                content['naver']['issues'].append(
+                    {
+                        'keyword_id': keyword['keyword_id'],
+                        'keyword_name': keyword['keyword_name'],
+                        'issue': '7일간 평균({}회)에 비해 노출({}회)이 급상승 했습니다'.format(round(avg_imp_for_7days, 2), data_7days[-1]['impCnt']),
                     }
                 )
 

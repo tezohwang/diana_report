@@ -49,5 +49,15 @@ RECOMMEND = {
         'bestgo': 2.0,
         'uiseong': 2.0,
         'wizpace': 5.0,
-    }
+    },
+    'avg_cpm_times': {
+        'bestgo': 2.0,
+        'uiseong': 2.0,
+        'wizpace': 5.0,
+    },
+    'avg_imp_times': {
+        'bestgo': 2.0,
+        'uiseong': 2.0,
+        'wizpace': 5.0,
+    },
 }
