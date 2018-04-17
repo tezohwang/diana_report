@@ -2,7 +2,7 @@
 
 DATABASE = {
     'diana': {
-        'db_uri': 'mongodb://wizpace:wizpace0@52.78.216.222:27017/diana',
+        'db_uri': 'mongodb://wizpace:wizpace0@13.125.239.144:27017/diana',
         'db_name': 'diana'
     },
     'autobidding': {
