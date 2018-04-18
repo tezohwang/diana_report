@@ -2,7 +2,7 @@ from django.shortcuts import render
 
 from .database import connect_db
 from .constant import FETCH, MAIL, RECOMMEND
-from .forms import create_mail, create_mail_2
+from .forms import create_mail
 
 import datetime
 import smtplib
@@ -69,62 +69,55 @@ def fetch_facebook_data(user_id, content):
 
 def fetch_naver_data(user_id, content):
     content['naver'] = {}
-    yesterday, today = get_yesterday_and_today(FETCH['from_days'])
-    # 어제부터 노출 된 적이 있는 캠페인들
-    campaigns_on_from_yesterday = list(connect_db('diana')['nvcampaigns'].find(
+    # 오늘 status가 ELIGIBLE(ON)인 캠페인들
+    campaigns_on_today = list(connect_db('diana')['nvcampaigns'].find(
         {
             "user_id": user_id,
-            # "dateEnd":yesterday,
-            "dateEnd": {"$gte": yesterday, "$lt": today},
-            "impCnt": {"$gte": FETCH['min_imp_limit']}
+            "status": "ELIGIBLE",
         }
     ))
-    if campaigns_on_from_yesterday:
-        content['naver']['campaigns'] = campaigns_on_from_yesterday
+    if campaigns_on_today:
+        content['naver']['campaigns'] = campaigns_on_today
 
-    # 어제부터 노출 된 적이 있는 광고그룹들
-    adgroups_on_from_yesterday = list(connect_db('diana')['nvadgroups'].find(
+    # 오늘 status가 ELIGIBLE(ON), 어제 stat이 있는 광고그룹들
+    adgroups_on_today = list(connect_db('diana')['nvadgroups'].find(
         {
             "user_id": user_id,
-            # "dateEnd":yesterday,
-            "dateEnd": {"$gte": yesterday, "$lt": today},
-            "impCnt": {"$gte": FETCH['min_imp_limit']}
+            "status": "ELIGIBLE",
+            "yesterday": {'$ne': {}}
         }
     ))
-    if adgroups_on_from_yesterday:
-        content['naver']['adgroups'] = adgroups_on_from_yesterday
+    if adgroups_on_today:
+        content['naver']['adgroups'] = adgroups_on_today
 
     # print(content['naver'])
     print("fetch_naver_data done")
     return content
 
 
-def fetch_naver_data_by_networkid(network_id, content):
+def fetch_naver_data_by_customer_id(customer_id, content):
     content['naver'] = {}
-    yesterday, today = get_yesterday_and_today(FETCH['from_days'])
-    # 어제부터 노출 된 적이 있는 캠페인들
-    campaigns_on_from_yesterday = list(connect_db('diana')['nvcampaigns'].find(
+    # 오늘 status가 ELIGIBLE(ON)인 캠페인들
+    campaigns_on_today = list(connect_db('diana')['nvcampaigns'].find(
         {
-            "network_id": network_id,
-            # "dateEnd":yesterday,
-            "dateEnd": {"$gte": yesterday, "$lt": today},
-            "impCnt": {"$gte": FETCH['min_imp_limit']}
+            "customer_id": customer_id,
+            "status": "ELIGIBLE",
         }
     ))
-    if campaigns_on_from_yesterday:
-        content['naver']['campaigns'] = campaigns_on_from_yesterday
+    if campaigns_on_today:
+        content['naver']['campaigns'] = campaigns_on_today
 
-    # 어제부터 노출 된 적이 있는 광고그룹들
-    adgroups_on_from_yesterday = list(connect_db('diana')['nvadgroups'].find(
+    # 오늘 status가 ELIGIBLE(ON), 어제 stat이 있는 광고그룹들
+    adgroups_on_today = list(connect_db('diana')['nvadgroups'].find(
         {
-            "network_id": network_id,
-            # "dateEnd":yesterday,
-            "dateEnd": {"$gte": yesterday, "$lt": today},
-            "impCnt": {"$gte": FETCH['min_imp_limit']}
+            "customer_id": customer_id,
+            "status": "ELIGIBLE",
+            "status_reason": "ELIGIBLE",
+            "yesterday": {'$ne': {}}
         }
     ))
-    if adgroups_on_from_yesterday:
-        content['naver']['adgroups'] = adgroups_on_from_yesterday
+    if adgroups_on_today:
+        content['naver']['adgroups'] = adgroups_on_today
 
     # print(content['naver'])
     print("fetch_naver_data done")
@@ -162,7 +155,7 @@ def send_mail(user_id, user_email, content):
     msg['From'] = MAIL['from']
     recipients = user_email
     msg['To'] = ','.join(recipients)
-    html = create_mail_2(user_id, content)
+    html = create_mail(user_id, content)
     if not html:
         print(user_id)
         print(user_email)
@@ -176,17 +169,13 @@ def send_mail(user_id, user_email, content):
 
 def process():
     user_id_list = get_user_id_list()
-    # print(user_id_list)
     for user_id in user_id_list:
         content = {'user_id': user_id}
         # fetch_facebook_data(user_id, content)
         fetch_naver_data(user_id, content)
         # fetch_adwords_data(user_id, content)
-        ###### should get from DB ######
         user_email = ['tony.hwang@wizpace.com', 'support@wizpace.com']
-        # user_email = ['tony.hwang@wizpace.com']
-        send_mail(user_id, user_email, content)
-        # print(user_id, content)
+        # send_mail(user_id, user_email, content)
     return print("process done - {}".format(datetime.datetime.now()))
 
 
@@ -194,129 +183,144 @@ def autobid_noti():
     db = connect_db('autobidding')
     users = list(db['users'].find())
     for user in users:
-        network_id = str(user['customer_id'])
+        customer_id = str(user['customer_id'])
         content = {
-            'network_id': network_id,
-            'user_id': user['user_id'],
+            'customer_id': customer_id,
+            'username': user['user_id'],
             'facebook': [],
             'adwords': [],
         }
-        fetch_naver_data_by_networkid(network_id, content)
+        fetch_naver_data_by_customer_id(customer_id, content)
         # should get from DB
-        # user_email = ['tony.hwang@wizpace.com']
-        user_email = ['tony.hwang@wizpace.com', 'support@wizpace.com']
-        # user_email = ['tony.hwang@wizpace.com', 'danbee@wizpace.com', 'support@wizpace.com']
+        user_email = ['tony.hwang@wizpace.com']
+        # user_email = ['tony.hwang@wizpace.com', 'support@wizpace.com']
         if user_email:
             if 'campaigns' in content['naver']:
                 content['naver']['campaigns'] = sorted(
-                    content['naver']['campaigns'], key=lambda campaign: campaign['campaign_name'])
+                    content['naver']['campaigns'], key=lambda campaign: campaign['name'])
             if 'adgroups' in content['naver']:
                 content['naver']['adgroups'] = sorted(
-                    content['naver']['adgroups'], key=lambda adgroup: adgroup['adgroup_name'])
+                    content['naver']['adgroups'], key=lambda adgroup: adgroup['name'])
             # print(content)
             content = recommend(content)
             # print(content)
-            send_mail(network_id, user_email, content)
+            send_mail(customer_id, user_email, content)
     return print("autobid_noti done - {}".format(datetime.datetime.now()))
 
 
 def recommend(content):
     content['naver']['issues'] = []
     db = connect_db('diana')
-    nvinsights = db['nvinsights']
-    nvinsightsp = db['nvinsightsp']
+    nvstats = db['nvstats']
+    nvkeywords = db['nvkeywords']
     # 현재까지 1000원 이상 사용한 키워드 리스트
-    keyword_list = list(nvinsightsp.find(
+    keyword_list = list(nvkeywords.find(
         {
-            'network_id': content['network_id'],
-            'salesAmt': {'$gte': RECOMMEND['salesAmt'][content['user_id']]},
+            'customer_id': content['customer_id'],
+            'last_month.spend': {'$gte': RECOMMEND['spend'][content['username']]},
         },
     ))
     # print('키워드 리스트: ', keyword_list)
     for keyword in keyword_list:
         # 7일전부터 어제까지의 데이터
-        data_7days = list(nvinsights.find(
+        data_7days = list(nvstats.find(
             {
-                'keyword_id': keyword['keyword_id'],
-                'dateEnd': {'$gte': (datetime.datetime.now() - datetime.timedelta(days=7))}
+                'res_id': keyword['keyword_id'],
+                'type': 'keyword',
+                'date_end': {'$gte': (datetime.datetime.now() - datetime.timedelta(days=7))}
             }
         ))
         # print(data_7days)
 
         # 지난 7일간 1000원 이상 사용했지만, 전환이 전혀 없는 키워드 검출
-        if sum([data['ccnt'] for data in data_7days]) == 0 and sum([data['salesAmt'] for data in data_7days]) >= RECOMMEND['no_ccnt_salesAmt'][content['user_id']]:
+        sum_ccnts = sum([data['ccnt']
+                         for data in data_7days if 'ccnt' in data])
+        sum_spends = sum([data['spend']
+                          for data in data_7days if 'spend' in data])
+        if sum_ccnts == 0 and sum_spends >= RECOMMEND['no_ccnt_spend'][content['username']]:
             content['naver']['issues'].append(
                 {
                     'keyword_id': keyword['keyword_id'],
-                    'keyword_name': keyword['keyword_name'],
-                    'issue': '7일간 소진 비용({}원) 대비 전환이 전혀 없습니다.'.format(sum([data['salesAmt'] for data in data_7days]), ','),
+                    'name': keyword['name'],
+                    'issue': '7일간 소진 비용({}원) 대비 전환이 전혀 없습니다.'.format(sum([data['spend'] for data in data_7days]), ','),
                 }
             )
 
         # 지난 7일간 CPC 대비 CTR이 가장 좋은 순위를 추천
-        ctr_by_cpc = [data['ctr']/(data['cpc'] + 0.0001)
-                      for data in data_7days if data['cpc']]
+        ctr_by_cpc = []
+        for data in data_7days:
+            if 'ctr' in data and 'cpc' in data:
+                if data['ctr'] * data['cpc']:
+                    ctr_by_cpc.append(data['ctr']/data['cpc'])
+
         if ctr_by_cpc:
             max_index = ctr_by_cpc.index(max(ctr_by_cpc))
-            best_rank = data_7days[max_index]['avgRnk']
+            best_rank = data_7days[max_index]['average_rank']
             if best_rank:
                 content['naver']['issues'].append(
                     {
                         'keyword_id': keyword['keyword_id'],
-                        'keyword_name': keyword['keyword_name'],
+                        'name': keyword['name'],
                         'issue': '7일간 최적 효율 순위는 {}위 입니다'.format(best_rank),
                     }
                 )
 
         # 지난 7일간 평균 CPC 대비 어제 CPC가 급상승(2배 이상)한 키워드 검출 (CPC가 0인 데이터는 제외)
         if data_7days:
-            try:
-                avg_cpc_for_7days = numpy.mean(
-                    [data['cpc'] for data in data_7days if data['cpc']])
-            except Exception as e:
-                print(str(e))
-                avg_cpc_for_7days = 0
-            if data_7days[-1]['cpc'] > avg_cpc_for_7days * RECOMMEND['avg_cpc_times'][content['user_id']] and avg_cpc_for_7days:
-                content['naver']['issues'].append(
-                    {
-                        'keyword_id': keyword['keyword_id'],
-                        'keyword_name': keyword['keyword_name'],
-                        'issue': '7일간 평균({}원)에 비해 CPC({}원)가 급상승 했습니다'.format(round(avg_cpc_for_7days, 2), data_7days[-1]['cpc']),
-                    }
-                )
+
+            cpc_for_7days = []
+            for data in data_7days:
+                if 'cpc' in data:
+                    if data['cpc']:
+                        cpc_for_7days.append(data['cpc'])
+            avg_cpc_for_7days = numpy.mean(cpc_for_7days)
+
+            if all([avg_cpc_for_7days, 'cpc' in data_7days[-1]]):
+                if data_7days[-1]['cpc'] > avg_cpc_for_7days * RECOMMEND['avg_cpc_times'][content['username']]:
+                    content['naver']['issues'].append(
+                        {
+                            'keyword_id': keyword['keyword_id'],
+                            'name': keyword['name'],
+                            'issue': '7일간 평균({}원)에 비해 CPC({}원)가 급상승 했습니다'.format(round(avg_cpc_for_7days, 2), data_7days[-1]['cpc']),
+                        }
+                    )
 
         # 지난 7일간 평균 CPM 대비 어제 CPM이 급상승(2배 이상)한 키워드 검출 (CPM이 0인 데이터는 제외)
         if data_7days:
-            try:
-                avg_cpm_for_7days = numpy.mean(
-                    [data['salesAmt']/data['impCnt'] for data in data_7days if data['impCnt'] * data['salesAmt']])
-            except Exception as e:
-                print(str(e))
-                avg_cpm_for_7days = 0
-            if data_7days[-1]['salesAmt']/data_7days[-1]['impCnt'] > avg_cpm_for_7days * RECOMMEND['avg_cpm_times'][content['user_id']] and avg_cpm_for_7days:
-                content['naver']['issues'].append(
-                    {
-                        'keyword_id': keyword['keyword_id'],
-                        'keyword_name': keyword['keyword_name'],
-                        'issue': '7일간 평균({}원)에 비해 노출 경쟁(CPM, {}원)이 급상승 했습니다'.format(round(avg_cpm_for_7days, 2), round(data_7days[-1]['salesAmt']/data_7days[-1]['impCnt'], 2)),
-                    }
-                )
+            cpm_for_7days = []
+            for data in data_7days:
+                if 'impressions' in data and 'spend' in data:
+                    if data['impressions'] * data['spend']:
+                        cpm_for_7days.append(data['spend']/data['impressions'])
+            avg_cpm_for_7days = numpy.mean(cpm_for_7days)
+
+            if all([avg_cpm_for_7days, 'spend' in data_7days[-1], 'impressions' in data_7days[-1]]):
+                if data_7days[-1]['spend']/data_7days[-1]['impressions'] > avg_cpm_for_7days * RECOMMEND['avg_cpm_times'][content['username']]:
+                    content['naver']['issues'].append(
+                        {
+                            'keyword_id': keyword['keyword_id'],
+                            'name': keyword['name'],
+                            'issue': '7일간 평균({}원)에 비해 노출 경쟁(CPM, {}원)이 급상승 했습니다'.format(round(avg_cpm_for_7days, 2), round(data_7days[-1]['spend']/data_7days[-1]['impressions'], 2)),
+                        }
+                    )
 
         # 지난 7일간 평균 Impressions 대비 어제 Impressions 급상승(2배 이상)한 키워드 검출 (Impressions이 0인 데이터는 제외)
         if data_7days:
-            try:
-                avg_imp_for_7days = numpy.mean(
-                    [data['impCnt'] for data in data_7days if data['impCnt']])
-            except Exception as e:
-                print(str(e))
-                avg_imp_for_7days = 0
-            if data_7days[-1]['impCnt'] > avg_imp_for_7days * RECOMMEND['avg_imp_times'][content['user_id']] and avg_imp_for_7days:
-                content['naver']['issues'].append(
-                    {
-                        'keyword_id': keyword['keyword_id'],
-                        'keyword_name': keyword['keyword_name'],
-                        'issue': '7일간 평균({}회)에 비해 노출({}회)이 급상승 했습니다'.format(round(avg_imp_for_7days, 2), data_7days[-1]['impCnt']),
-                    }
-                )
+            imp_for_7days = []
+            for data in data_7days:
+                if 'impressions' in data:
+                    if data['impressions']:
+                        imp_for_7days.append(data['impressions'])
+            avg_imp_for_7days = numpy.mean(imp_for_7days)
+
+            if all([avg_imp_for_7days, 'impressions' in data_7days[-1]]):
+                if data_7days[-1]['impressions'] > avg_imp_for_7days * RECOMMEND['avg_imp_times'][content['username']]:
+                    content['naver']['issues'].append(
+                        {
+                            'keyword_id': keyword['keyword_id'],
+                            'name': keyword['name'],
+                            'issue': '7일간 평균({}회)에 비해 노출({}회)이 급상승 했습니다'.format(round(avg_imp_for_7days, 2), data_7days[-1]['impressions']),
+                        }
+                    )
 
     return content

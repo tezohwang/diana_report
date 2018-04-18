@@ -35,12 +35,12 @@ MAIL = {
 }
 
 RECOMMEND = {
-    'salesAmt': {
+    'spend': {
         'bestgo': 500000,
         'uiseong': 3000,
         'wizpace': 1500,
     },
-    'no_ccnt_salesAmt': {
+    'no_ccnt_spend': {
         'bestgo': 50000,
         'uiseong': 1000,
         'wizpace': 500,
