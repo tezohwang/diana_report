@@ -220,7 +220,7 @@ def recommend(content):
             'last_month.spend': {'$gte': RECOMMEND['spend'][content['username']]},
         },
     ))
-    # print('키워드 리스트: ', keyword_list)
+    print('키워드 리스트: ', keyword_list)
     for keyword in keyword_list:
         # 7일전부터 어제까지의 데이터
         data_7days = list(nvstats.find(
@@ -242,7 +242,7 @@ def recommend(content):
                 {
                     'keyword_id': keyword['keyword_id'],
                     'name': keyword['name'],
-                    'issue': '7일간 소진 비용({}원) 대비 전환이 전혀 없습니다.'.format(sum([data['spend'] for data in data_7days]), ','),
+                    'issue': '7일간 소진 비용({}원) 대비 전환이 전혀 없습니다.'.format(sum_spends, ','),
                 }
             )
 
