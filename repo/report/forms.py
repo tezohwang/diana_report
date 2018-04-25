@@ -182,7 +182,7 @@ def create_mail(user_id, content):
                 form += '</tr>'
         form += '</table>'
         # 키워드 이슈가 있으면 작성
-        if content['naver']['issues']:
+        if content['naver']['recos']:
             form += '''
                 <table style="width:100%; border:1px solid rgba(0,0,0,0.1);border-collapse:collapse;font-family:Helvetica;font-size:12px;font-style:normal;font-variant-caps:normal;font-weight:normal;letter-spacing:normal;text-align:start;text-indent:0px;text-transform:none;white-space:normal;word-spacing:0px;width:759px">
                 <tbody>
@@ -197,13 +197,13 @@ def create_mail(user_id, content):
                     <th>주요 이슈</th>
                 </tr>
             '''
-            for issue_obj in content['naver']['issues']:
+            for reco in content['naver']['recos']:
                 # tr
                 form += '<tr>'
                 # 키워드 이름
-                form += '<td>{}</td>'.format(issue_obj['name'])
+                form += '<td>{}</td>'.format(reco['name'])
                 # 이슈 데이터
-                form += '<td>{}</td>'.format(issue_obj['issue'])
+                form += '<td>{}</td>'.format(reco['reco'])
                 form += '</tr>'
         form += '</table>'
     form += '''
