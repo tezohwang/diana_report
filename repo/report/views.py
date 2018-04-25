@@ -351,3 +351,46 @@ def recommend_keyword(content, nvstats, keyword):
 					}
 				)
 	return content
+
+def save_recommend_keywords():
+	db = connect_db('diana')
+	nvkeywords = db['nvkeywords']
+	nvaccounts = db['nvaccounts']
+	keyword_list = nvkeywords.find({"status": "ELIGIBLE"})
+
+	for keyword in keyword_list:
+		print("키워드 - {}".format(keyword['name']))
+
+		recos = []
+		username = nvaccounts.find_one({"client_customer_id": keyword['customer_id']})['client_login_id']
+		last_week = keyword['last_week']
+		yesterday = keyword['yesterday']
+
+		# 지난 7일간 1000원 이상 사용했지만, 전환이 전혀 없는 키워드 검출
+		if last_week['ccnt'] == 0 and last_week['spend'] >= RECOMMEND['no_ccnt_spend'][username]:
+			reco = '7일간 소진 비용({}원) 대비 전환이 전혀 없습니다.'.format(last_week['spend'], ',')
+			recos.append(reco)
+
+		# 지난 7일간 평균 CPC 대비 어제 CPC가 급상승(2배 이상)한 키워드 검출 (CPC가 0인 데이터는 제외)
+		if yesterday['cpc'] > last_week['cpc'] * RECOMMEND['avg_cpc_times'][username]:
+			reco = '7일간 평균({}원) 대비 1일 전 CPC({}원)가 급상승했습니다.'.format(round(last_week['cpc'], 2), round(yesterday['cpc'], 2))
+			recos.append(reco)
+
+		# 지난 7일간 평균 CPM 대비 어제 CPM이 급상승(2배 이상)한 키워드 검출 (CPM이 0인 데이터는 제외)
+		if yesterday['cpm'] > last_week['cpm'] * RECOMMEND['avg_cpc_times'][username]:
+			reco = '7일간 평균({}원) 대비 1일 전 CPM({}원)이 급상승했습니다.'.format(round(last_week['cpm'], 2), round(yesterday['cpm'], 2))
+			recos.append(reco)
+
+		# 지난 7일간 평균 Impressions 대비 어제 Impressions 급상승(2배 이상)한 키워드 검출 (Impressions이 0인 데이터는 제외)
+		if yesterday['impressions'] > last_week['impressions'] * RECOMMEND['avg_cpc_times'][username]:
+			reco = '7일간 평균({}회) 대비 1일 전 노출({}회)이 급상승했습니다.'.format(last_week['impressions'], yesterday['impressions'])
+			recos.append(reco)
+
+		if recos:
+			nvkeywords.update_one(
+				{"keyword_id": keyword['keyword_id']},
+				{"$set": {"recommendation": recos}}
+			)
+			print(recos)
+	
+	return print("save_recommend_keywords done - {}".format(datetime.datetime.now()))
